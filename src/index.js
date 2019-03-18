@@ -63,10 +63,12 @@ class InputTrigger extends Component {
 
     if (!triggered) {
       if (
-        which === trigger.keyCode &&
-        shiftKey === !!trigger.shiftKey &&
-        ctrlKey === !!trigger.ctrlKey &&
-        metaKey === !!trigger.metaKey
+        typeof trigger === 'function'
+          ? trigger(event)
+          : which === trigger.keyCode &&
+            shiftKey === !!trigger.shiftKey &&
+            ctrlKey === !!trigger.ctrlKey &&
+            metaKey === !!trigger.metaKey
       ) {
         this.setState({
           triggered: true,
@@ -150,12 +152,15 @@ class InputTrigger extends Component {
 }
 
 InputTrigger.propTypes = {
-  trigger: PropTypes.shape({
-    keyCode: PropTypes.number,
-    shiftKey: PropTypes.bool,
-    ctrlKey: PropTypes.bool,
-    metaKey: PropTypes.bool,
-  }),
+  trigger: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({
+      keyCode: PropTypes.number,
+      shiftKey: PropTypes.bool,
+      ctrlKey: PropTypes.bool,
+      metaKey: PropTypes.bool,
+    }),
+  ]),
   onStart: PropTypes.func,
   onCancel: PropTypes.func,
   onType: PropTypes.func,
