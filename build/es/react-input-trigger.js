@@ -86,7 +86,8 @@ var InputTrigger = function (_Component) {
           trigger = _props.trigger,
           onStart = _props.onStart,
           onCancel = _props.onCancel,
-          onType = _props.onType;
+          onType = _props.onType,
+          keyboardEvent = _props.keyboardEvent;
       var which = event.which,
           shiftKey = event.shiftKey,
           metaKey = event.metaKey,
@@ -101,7 +102,7 @@ var InputTrigger = function (_Component) {
         if (typeof trigger === 'function' ? trigger(event) : which === trigger.keyCode && shiftKey === !!trigger.shiftKey && ctrlKey === !!trigger.ctrlKey && metaKey === !!trigger.metaKey) {
           this.setState({
             triggered: true,
-            triggerStartPosition: selectionStart + 1
+            triggerStartPosition: selectionStart + (keyboardEvent === 'onKeyDown' ? 1 : 0)
           }, function () {
             setTimeout(function () {
               onStart(getHookObject('start', _this2.element));
@@ -151,15 +152,14 @@ var InputTrigger = function (_Component) {
           onCancel = _props2.onCancel,
           onType = _props2.onType,
           endTrigger = _props2.endTrigger,
-          rest = _objectWithoutProperties(_props2, ['elementRef', 'children', 'trigger', 'onStart', 'onCancel', 'onType', 'endTrigger']);
+          keyboardEvent = _props2.keyboardEvent,
+          rest = _objectWithoutProperties(_props2, ['elementRef', 'children', 'trigger', 'onStart', 'onCancel', 'onType', 'endTrigger', 'keyboardEvent']);
+
+      rest[keyboardEvent] = this.handleTrigger;
 
       return _react2.default.createElement(
         'div',
-        _extends({
-          role: 'textbox',
-          tabIndex: -1,
-          onKeyUp: this.handleTrigger
-        }, rest),
+        _extends({ role: 'textbox', tabIndex: -1 }, rest),
         !elementRef ? _react2.default.Children.map(this.props.children, function (child) {
           return _react2.default.cloneElement(child, {
             ref: function ref(element) {
@@ -189,7 +189,8 @@ InputTrigger.propTypes = {
   onType: _propTypes2.default.func,
   endTrigger: _propTypes2.default.func,
   children: _propTypes2.default.element.isRequired,
-  elementRef: _propTypes2.default.element
+  elementRef: _propTypes2.default.element,
+  keyboardEvent: _propTypes2.default.oneOf(['onKeyDown', 'onKeyUp'])
 };
 
 InputTrigger.defaultProps = {
@@ -203,7 +204,8 @@ InputTrigger.defaultProps = {
   onCancel: function onCancel() {},
   onType: function onType() {},
   endTrigger: function endTrigger() {},
-  elementRef: null
+  elementRef: null,
+  keyboardEvent: 'onKeyDown'
 };
 
 exports.default = InputTrigger;

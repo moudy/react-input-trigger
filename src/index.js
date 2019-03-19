@@ -49,6 +49,7 @@ class InputTrigger extends Component {
       onStart,
       onCancel,
       onType,
+      keyboardEvent,
     } = this.props;
 
     const {
@@ -72,7 +73,7 @@ class InputTrigger extends Component {
       ) {
         this.setState({
           triggered: true,
-          triggerStartPosition: selectionStart + 1,
+          triggerStartPosition: selectionStart + (keyboardEvent === 'onKeyDown' ? 1 : 0),
         }, () => {
           setTimeout(() => {
             onStart(getHookObject('start', this.element));
@@ -118,16 +119,14 @@ class InputTrigger extends Component {
       onCancel,
       onType,
       endTrigger,
+      keyboardEvent,
       ...rest
     } = this.props;
 
+    rest[keyboardEvent] = this.handleTrigger;
+
     return (
-      <div
-        role="textbox"
-        tabIndex={-1}
-        onKeyUp={this.handleTrigger}
-        {...rest}
-      >
+      <div role="textbox" tabIndex={-1} {...rest}>
         {
           !elementRef
             ? (
@@ -167,6 +166,7 @@ InputTrigger.propTypes = {
   endTrigger: PropTypes.func,
   children: PropTypes.element.isRequired,
   elementRef: PropTypes.element,
+  keyboardEvent: PropTypes.oneOf(['onKeyDown', 'onKeyUp']),
 };
 
 InputTrigger.defaultProps = {
@@ -181,6 +181,7 @@ InputTrigger.defaultProps = {
   onType: () => {},
   endTrigger: () => {},
   elementRef: null,
+  keyboardEvent: 'onKeyDown',
 };
 
 export default InputTrigger;
