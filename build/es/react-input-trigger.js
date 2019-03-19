@@ -158,7 +158,7 @@ var InputTrigger = function (_Component) {
         _extends({
           role: 'textbox',
           tabIndex: -1,
-          onKeyDown: this.handleTrigger
+          onKeyUp: this.handleTrigger
         }, rest),
         !elementRef ? _react2.default.Children.map(this.props.children, function (child) {
           return _react2.default.cloneElement(child, {

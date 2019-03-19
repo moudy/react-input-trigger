@@ -125,7 +125,7 @@ class InputTrigger extends Component {
       <div
         role="textbox"
         tabIndex={-1}
-        onKeyDown={this.handleTrigger}
+        onKeyUp={this.handleTrigger}
         {...rest}
       >
         {
